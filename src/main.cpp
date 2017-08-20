@@ -308,32 +308,45 @@ int main() {
           }
           
           bool too_close = false;
+          bool left_lane_has_car = false;
+          bool right_lane_has_car = false;
           
           // find ref_v to use
           for (int i = 0; i < sensor_fusion.size(); i++) {
             float d = sensor_fusion[i][6]; // car's lane
+            double vx = sensor_fusion[i][3];
+            double vy = sensor_fusion[i][4];
+            double check_speed = sqrt(vx*vx+vy*vy);
+            double check_car_s = sensor_fusion[i][5];
+            check_car_s += ((double)prev_size*0.02*check_speed);
+            
             if (d < (2+4*lane+2) && d > (2+4*lane-2)) { // car is in my line
-              double vx = sensor_fusion[i][3];
-              double vy = sensor_fusion[i][4];
-              double check_speed = sqrt(vx*vx+vy*vy);
-              double check_car_s = sensor_fusion[i][5];
-              check_car_s += ((double)prev_size*0.02*check_speed);
-              
               // if check_car in front and the gap between the car is 30m
               if (check_car_s > car_s && ((check_car_s - car_s) < 30)) {
                 // TODO: change lane
                 too_close = true;
-                
-                if (lane > 0) {
-                  lane = 0;
-                }
               }
-              
+            }
+            else if (d < (2+4*(lane+1)+2) && d > (2+4*(lane+1)-2)) {
+              if (check_car_s > car_s && (abs(check_car_s - car_s) < 50)) {
+                right_lane_has_car = true;
+              }
+            }
+            else if (d < (2+4*(lane-1)+2) && d > (2+4*(lane-1)-2)) {
+              if (check_car_s > car_s && ((check_car_s - car_s) < 50)) {
+                left_lane_has_car = true;
+              }
             }
           }
           
           if (too_close) {
-            ref_vel -= .224;
+            if (!left_lane_has_car && lane > 0) {
+                lane--;
+            } else if (!right_lane_has_car && lane < 2) {
+              lane++;
+            } else {
+              ref_vel -= .224;
+            }
           } else if (ref_vel < 49) {
             ref_vel += .224;
           }
