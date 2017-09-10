@@ -321,19 +321,18 @@ int main() {
             check_car_s += ((double)prev_size*0.02*check_speed);
             
             if (d < (2+4*lane+2) && d > (2+4*lane-2)) { // car is in my line
-              // if check_car in front and the gap between the car is 30m
+              // if check_car in front and the gap between the car is 20m
               if (check_car_s > car_s && ((check_car_s - car_s) < 30)) {
-                // TODO: change lane
                 too_close = true;
               }
             }
-            else if (d < (2+4*(lane+1)+2) && d > (2+4*(lane+1)-2)) {
-              if (check_car_s > car_s && (abs(check_car_s - car_s) < 50)) {
+            else if (d < (2+4*(lane+1)+2) && d > (2+4*(lane+1)-2)) { // right lane check
+              if ((check_car_s > car_s && check_car_s - car_s < 20) || (check_car_s < car_s && car_s - check_car_s < 10)) {
                 right_lane_has_car = true;
               }
             }
-            else if (d < (2+4*(lane-1)+2) && d > (2+4*(lane-1)-2)) {
-              if (check_car_s > car_s && ((check_car_s - car_s) < 50)) {
+            else if (d < (2+4*(lane-1)+2) && d > (2+4*(lane-1)-2)) { // left lane check
+              if ((check_car_s > car_s && check_car_s - car_s < 20) || (check_car_s < car_s && car_s - check_car_s < 10)) {
                 left_lane_has_car = true;
               }
             }

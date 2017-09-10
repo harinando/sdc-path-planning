@@ -1,6 +1,17 @@
 # CarND-Path-Planning-Project
 Self-Driving Car Engineer Nanodegree Program
-   
+
+### Path Generation
+#### Acceleration
+To avoid exceeding the maximum acceleration and jerk, the car accelerate/decelerate by .224 until it reaches its desired velocity or is obstructed by other cars.
+
+#### Lane change
+The car tries to stay on its lane as much as possible. If there is a slower car in front, it tries to move to the left lane if there are no car in that lane. If there is a car to the left, it tries to move to the right. The car changes lane only when there are no car in within 30m in the target lane. In the future, I will try a more sophisticated path planning algoriths by generating multiple paths and select the best one based on the following cost funcitions:
+- speed: penalize trajectories with low velocity.
+- collisions: penalize trajectories that causes accident.
+- Penalize trajectories that does not the middle of the lane.
+- Penalizes trajectories with reckless driving.
+
 ### Simulator.
 You can download the Term3 Simulator which contains the Path Planning Project from the [releases tab (https://github.com/udacity/self-driving-car-sim/releases).
 
